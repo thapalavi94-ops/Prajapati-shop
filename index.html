@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self';">
+    <title>Prajapati Shop</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Prajapati Shop</h1>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Products</a></li>
+                <li><a href="#">Cart</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section id="product-list">
+            <h2>Available Products</h2>
+            <div class="product" id="product-1">
+                <h3>Product 1</h3>
+                <p>Description of Product 1</p>
+                <button onclick="addToCart(1)">Add to Cart</button>
+            </div>
+            <div class="product" id="product-2">
+                <h3>Product 2</h3>
+                <p>Description of Product 2</p>
+                <button onclick="addToCart(2)">Add to Cart</button>
+            </div>
+            <!-- More products can be added here -->
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2026 Prajapati Shop. All rights reserved.</p>
+    </footer>
+</body>
+</html>
