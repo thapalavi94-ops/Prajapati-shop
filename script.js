@@ -1,57 +1,97 @@
-// script.js
+// JavaScript code for Product Management, Shopping Cart, Admin Authentication, and more
 
-// Secure JavaScript functionality for product management, shopping cart, checkout, and admin authentication 
+// Product Management
+let products = [];
 
-// Product Management 
-const products = [];
-
-function addProduct(product) {
-    // Add product validation here (e.g., checking for duplicates, valid data)
-    products.push(product);
-}
-
-function removeProduct(productId) {
-    // Implement secure removal mechanism
-    const index = products.findIndex(p => p.id === productId);
-    if (index !== -1) {
-        products.splice(index, 1);
+function addProduct(name, price) {
+    // Input validation
+    if (!name || price <= 0) {
+        console.error('Invalid product details.');
+        return;
     }
+    const product = { id: Date.now(), name: escapeHtml(name), price: price };
+    products.push(product);
+    notify('Product added successfully.');
 }
 
-// Shopping Cart 
-const cart = [];
+function removeProduct(id) {
+    products = products.filter(product => product.id !== id);
+    notify('Product removed successfully.');
+}
+
+function listProducts() {
+    return products;
+}
+
+// Shopping Cart
+let cart = [];
 
 function addToCart(productId) {
-    // Ensure product exists before adding to cart
     const product = products.find(p => p.id === productId);
     if (product) {
-        cart.push(product);
+        const existingProduct = cart.find(item => item.product.id === productId);
+        if (existingProduct) {
+            existingProduct.quantity += 1;
+        } else {
+            cart.push({ product: product, quantity: 1 });
+        }
+        notify('Product added to cart.');
     }
 }
 
 function checkout() {
-    // Implement secure checkout process, e.g., payment processing
     if (cart.length === 0) {
-        throw new Error('Cart is empty.');
+        notify('Cart is empty.');
+        return;
     }
-    // Process payment and clear cart after successful transaction
+    // Proceed with checkout logic
+    // Clear cart after checkout
+    cart = [];
+    notify('Checkout successful.');
 }
 
-// Admin Authentication 
-let loggedInAdmin = null;
+// Admin Authentication
+let adminUser = { username: 'admin', password: 'securepassword' }; // Secure password storage should use hashing
 
-function adminLogin(username, password) {
-    // Validate admin credentials securely (consider using hash comparison)
-    if (username === 'admin' && password === 'securepassword123') {
-        loggedInAdmin = username;
+function authenticate(username, password) {
+    if (username === adminUser.username && password === adminUser.password) {
+        return true;
     } else {
-        throw new Error('Invalid credentials.');
+        notify('Authentication failed.');
+        return false;
     }
 }
 
-function adminLogout() {
-    loggedInAdmin = null;
+// XSS Protection
+function escapeHtml(unsafe) {
+    return unsafe.replace(/&/g, '&amp;')
+                 .replace(/</g, '&lt;')
+                 .replace(/>/g, '&gt;')
+                 .replace(/"/g, '&quot;')
+                 .replace(/'/g, '&#039;');
 }
 
-// Export functions for use in other modules
-export { addProduct, removeProduct, addToCart, checkout, adminLogin, adminLogout };
+// Notifications
+function notify(message) {
+    console.log(message);  // Replace with UI alert or notification
+}
+
+// Local Storage Management
+function saveToLocalStorage() {
+    localStorage.setItem('products', JSON.stringify(products));
+    localStorage.setItem('cart', JSON.stringify(cart));
+}
+
+function loadFromLocalStorage() {
+    const loadedProducts = localStorage.getItem('products');
+    const loadedCart = localStorage.getItem('cart');
+    if (loadedProducts) products = JSON.parse(loadedProducts);
+    if (loadedCart) cart = JSON.parse(loadedCart);
+}
+
+// Error Handling
+try {
+    loadFromLocalStorage();
+} catch (error) {
+    console.error('Error loading from local storage:', error);
+}
